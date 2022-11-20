@@ -4,7 +4,7 @@
   "config_flow": true,
   "documentation": "https://github.com/speijnik/hass-myhomeserver",
   "requirements": [
-    "git+https://github.com/a-ungurianu/myhome.git@feat/fancoin_towelwarmer"
+    "myhome @ git+https://github.com/a-ungurianu/myhome.git@feat/fancoin_towelwarmer"
   ],
   "ssdp": [
     {
