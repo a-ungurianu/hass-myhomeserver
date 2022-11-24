@@ -59,10 +59,19 @@ class MyHomeServerHub:
         return lights
 
     async def fans(self) -> typing.Iterable[myhome.object.Fancoil]:
-        fans: list[myhome.object.Light] = []
+        fans: list[myhome.object.Fancoil] = []
         object_list = await self.get_object_list()
 
         for o in object_list.filter(type="fancoil"):
             if isinstance(o, myhome.object.Fancoil):
                 fans.append(o)
         return fans
+
+    async def thermostats(self) -> typing.Iterable[myhome.object.Thermostat]:
+        thermostats: list[myhome.object.Thermostat] = []
+        object_list = await self.get_object_list()
+
+        for o in object_list.filter(type="thermostat"):
+            if isinstance(o, myhome.object.Thermostat):
+                thermostats.append(o)
+        return thermostats
