@@ -116,5 +116,9 @@ class MyHomeServerBlind(CoverEntity):
         """Close cover."""
         return await self._blind.move_down()
 
+    async def async_stop_cover(self, **kwargs):
+        """Stop the cover."""
+        return await self._blind.move_stop()
+
     async def async_update(self):
         self._value = await self._blind.get_value()
