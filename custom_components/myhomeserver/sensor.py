@@ -56,11 +56,18 @@ class MyHomeServerThermostatTemp(SensorEntity):
         self._server_serial = server_serial
         self._value: ObjectValueThermostat | None = None
 
-        self.last_reset = None
-        self.device_class = DEVICE_CLASS_TEMPERATURE
-        self.native_unit_of_measurement = TEMP_CELSIUS
-        self.state_class = STATE_CLASS_MEASUREMENT
+    @property
+    def device_class(self):
+        return DEVICE_CLASS_TEMPERATURE
+    
+    @property
+    def native_unit_of_measurement(self) -> str | None:
+        return TEMP_CELSIUS
 
+    @property
+    def state_class(self):
+        return STATE_CLASS_MEASUREMENT
+    
     @property
     def native_value(self):
         return self._value.temperature if self._value is not None else None
