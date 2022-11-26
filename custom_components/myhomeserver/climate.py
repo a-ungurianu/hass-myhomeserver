@@ -69,7 +69,7 @@ class MyHomeServerThermostat(ClimateEntity):
 
     @property
     def target_temperature(self):
-        return self._value.setpoint if self._value is not None and self._value.mode != "HOT" else None
+        return self._value.setpoint if self._value is not None and self._value.mode == "HOT" else None
     
     async def async_set_temperature(self, temperature=None, **kwargs) -> None:
         await self._thermostat.set_temperature(float(temperature))
