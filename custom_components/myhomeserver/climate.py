@@ -7,7 +7,8 @@ import voluptuous as vol
 from myhome._gen.model.object_value_thermostat import ObjectValueThermostat
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorEntity, TEMP_CELSIUS, DEVICE_CLASS_TEMPERATURE, STATE_CLASS_MEASUREMENT
+from homeassistant.components.climate import ClimateEntity, TEMP_CELSIUS, PLATFORM_SCHEMA, SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.climate.const import CURRENT_HVAC_HEAT, CURRENT_HVAC_OFF, HVAC_MODE_HEAT, HVAC_MODE_OFF
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
@@ -16,12 +17,13 @@ from .const import DOMAIN
 
 PARALLEL_UPDATES = 10
 
-OPTIONAL_TEMP_SENSOR_STATE_ATTRIBUTES = [
+OPTIONAL_CLIMATE_STATE_ATTRIBUTES = [
     "protocol_name",
     "protocol_config",
     "id_room",
     "id_zone",
 ]
+
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -40,7 +42,7 @@ async def async_setup_entry(
 
     server_serial = await hub.get_server_serial()
     thermostats = [
-        MyHomeServerThermostatTemp(server_serial, thermostat)
+        MyHomeServerThermostat(server_serial, thermostat)
         for thermostat in await hub.thermostats()
     ]
 
@@ -50,29 +52,43 @@ async def async_setup_entry(
     return True
 
 
-class MyHomeServerThermostatTemp(SensorEntity):
+class MyHomeServerThermostat(ClimateEntity):
     def __init__(self, server_serial: str, thermostat: myhome.object.Thermostat):
         self._thermostat = thermostat
         self._server_serial = server_serial
         self._value: ObjectValueThermostat | None = None
-
-    @property
-    def device_class(self):
-        return DEVICE_CLASS_TEMPERATURE
     
     @property
-    def native_unit_of_measurement(self) -> str | None:
+    def temperature_unit(self) -> str | None:
         return TEMP_CELSIUS
 
-    @property
-    def state_class(self):
-        return STATE_CLASS_MEASUREMENT
     
     @property
-    def native_value(self):
+    def current_temperature(self):
         return self._value.temperature if self._value is not None else None
 
+    @property
+    def target_temperature(self):
+        return self._value.setpoint if self._value is not None and self._value.mode != "HOT" else None
     
+    async def async_set_temperature(self, temperature) -> None:
+        await self._thermostat.set_temperature(float(temperature))
+
+    @property
+    def hvac_modes(self) -> list[str]:
+        return [HVAC_MODE_HEAT, HVAC_MODE_OFF]
+
+    @property
+    def hvac_action(self) -> str | None:
+        if self._value is not None:
+            if self._value.mode == "HOT":
+                return CURRENT_HVAC_HEAT
+        return CURRENT_HVAC_OFF
+
+    @property
+    def supported_features(self) -> int:
+        return SUPPORT_TARGET_TEMPERATURE
+
     @property
     def unique_id(self) -> str | None:
         return "%s_%d_temp" % (self._server_serial, self._thermostat.id)
@@ -81,7 +97,7 @@ class MyHomeServerThermostatTemp(SensorEntity):
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         extra_state_attributes = {}
 
-        for attribute_name in OPTIONAL_TEMP_SENSOR_STATE_ATTRIBUTES:
+        for attribute_name in OPTIONAL_CLIMATE_STATE_ATTRIBUTES:
             if attribute_name in self._thermostat.object_info:
                 extra_state_attributes[attribute_name] = self._thermostat.object_info[attribute_name]
         return extra_state_attributes
