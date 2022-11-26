@@ -86,6 +86,14 @@ class MyHomeServerThermostat(ClimateEntity):
         return HVAC_MODE_HEAT
 
     @property
+    def max_temp(self) -> float:
+        return 25.0
+
+    @property
+    def min_temp(self) -> float:
+        return 16.0
+
+    @property
     def hvac_action(self) -> str | None:
         if self._value is not None:
             if self._value.mode == "HOT":
