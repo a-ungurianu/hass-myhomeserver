@@ -71,12 +71,19 @@ class MyHomeServerThermostat(ClimateEntity):
     def target_temperature(self):
         return self._value.setpoint if self._value is not None and self._value.mode != "HOT" else None
     
-    async def async_set_temperature(self, temperature) -> None:
+    async def async_set_temperature(self, temperature=None, **kwargs) -> None:
         await self._thermostat.set_temperature(float(temperature))
+
+    async def async_set_hvac_mode(self, hvac_mode: str) -> None:
+        await self._thermostat.set_mode("HOT" if hvac_mode == HVAC_MODE_HEAT else "OFF")
 
     @property
     def hvac_modes(self) -> list[str]:
         return [HVAC_MODE_HEAT, HVAC_MODE_OFF]
+
+    @property
+    def hvac_mode(self) -> str:
+        return HVAC_MODE_HEAT
 
     @property
     def hvac_action(self) -> str | None:
