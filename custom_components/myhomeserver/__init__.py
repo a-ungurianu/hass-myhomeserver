@@ -9,7 +9,7 @@ from homeassistant.helpers.typing import ConfigType
 from .const import DOMAIN, LOGGER
 from .hub import MyHomeServerHub
 
-PLATFORMS = [Platform.LIGHT, Platform.FAN, Platform.SENSOR]
+PLATFORMS = [Platform.LIGHT, Platform.FAN, Platform.SENSOR, Platform.COVER]
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:

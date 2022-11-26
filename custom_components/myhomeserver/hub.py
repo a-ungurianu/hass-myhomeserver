@@ -75,3 +75,12 @@ class MyHomeServerHub:
             if isinstance(o, myhome.object.Thermostat):
                 thermostats.append(o)
         return thermostats
+    
+    async def blinds(self) -> typing.Iterable[myhome.object.Shutter]:
+        blinds: list[myhome.object.Shutter] = []
+        object_list = await self.get_object_list()
+
+        for o in object_list.filter(type="shutter"):
+            if isinstance(o, myhome.object.Shutter):
+                blinds.append(o)
+        return blinds
