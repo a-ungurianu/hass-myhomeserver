@@ -61,7 +61,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._username: str | None = None
         self._password: str | None = None
         self._serial: str | None = None
-        self._name: str | None = None
+        self._name: str | None = "MyHomeServer"
 
     async def _get_serial_for_host(self, host: str) -> str:
         client = myhome.client.Client(host)
