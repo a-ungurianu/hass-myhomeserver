@@ -8,7 +8,7 @@ from myhome._gen.model.object_value_fancoil import ObjectValueFancoil
 
 import homeassistant.helpers.config_validation as cv
 
-from homeassistant.components.fan import FanEntity, PLATFORM_SCHEMA, SUPPORT_SET_SPEED
+from homeassistant.components.fan import FanEntity, FanEntityFeature, PLATFORM_SCHEMA
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
@@ -77,7 +77,7 @@ class MyHomeServerFanCoil(FanEntity):
 
     @property
     def supported_features(self) -> int:
-        return SUPPORT_SET_SPEED
+        return FanEntityFeature.SET_SPEED
 
     @property
     def unique_id(self) -> str | None:

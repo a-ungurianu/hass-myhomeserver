@@ -7,10 +7,10 @@ import voluptuous as vol
 from myhome._gen.model.object_value_thermostat import ObjectValueThermostat
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.climate import ClimateEntity, TEMP_CELSIUS, PLATFORM_SCHEMA, SUPPORT_TARGET_TEMPERATURE
+from homeassistant.components.climate import ClimateEntity, ClimateEntityFeature, PLATFORM_SCHEMA
 from homeassistant.components.climate.const import CURRENT_HVAC_HEAT, CURRENT_HVAC_OFF, HVAC_MODE_HEAT, HVAC_MODE_OFF
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME, UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from .const import DOMAIN
@@ -60,7 +60,7 @@ class MyHomeServerThermostat(ClimateEntity):
     
     @property
     def temperature_unit(self) -> str | None:
-        return TEMP_CELSIUS
+        return UnitOfTemperature.CELSIUS
 
     
     @property
@@ -102,7 +102,7 @@ class MyHomeServerThermostat(ClimateEntity):
 
     @property
     def supported_features(self) -> int:
-        return SUPPORT_TARGET_TEMPERATURE
+        return ClimateEntityFeature.TARGET_TEMPERATURE
 
     @property
     def unique_id(self) -> str | None:

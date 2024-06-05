@@ -7,7 +7,7 @@ import voluptuous as vol
 from myhome._gen.model.object_value_shutter import ObjectValueShutter
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.cover import CoverEntity, PLATFORM_SCHEMA, DEVICE_CLASS_SHADE, SUPPORT_OPEN, SUPPORT_CLOSE, SUPPORT_STOP, STATE_CLOSING, STATE_OPENING
+from homeassistant.components.cover import CoverEntity, CoverEntityFeature, CoverDeviceClass, PLATFORM_SCHEMA, STATE_CLOSING, STATE_OPENING
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
@@ -58,11 +58,11 @@ class MyHomeServerBlind(CoverEntity):
 
     @property
     def device_class(self):
-        return DEVICE_CLASS_SHADE
+        return CoverDeviceClass.BLIND
     
     @property
     def supported_features(self) -> int:
-        return SUPPORT_OPEN | SUPPORT_CLOSE | SUPPORT_STOP
+        return CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE | CoverEntityFeature.STOP
     
     @property
     def native_value(self):
